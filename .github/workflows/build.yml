@@ -1,0 +1,27 @@
+on:
+  push:
+    branches: [ $default_branch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-25.04
+    name: Build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: "ghostty-org/ghostty"
+      - uses: mlugg/setup-zig@v2
+      - name: "Install build dependencies"
+        run: sudo apt update -y; sudo apt install -y libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
+      - name: "Compile ghostty for aarch64"
+        run: zig build -Doptimize=ReleaseFast -Dtarget=aarch64-linux --prefix aarch64-linux
+      - name: "Compile ghostty for x86_64"
+        run: zig build -Doptimize=ReleaseFast -Dtarget=x86_64-linux --prefix x86_64-linux
+      - name: "Compress binary"
+        run: |
+          mkdir release
+          tar -czf release/aarch64-linux.tar.gz aarch64-linux
+          tar -czf release/x86_64-linux.tar.gz x86_64-linux
+      - name: "Publish release"
+        run: gh release create "master-$(git log -n 1 --pretty=format:'%H')" ./release/*
+
