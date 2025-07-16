@@ -11,7 +11,7 @@ jobs:
         with:
           repository: "ghostty-org/ghostty"
       - name: "Install build dependencies"
-        run: apt update -y; apt install -y jq libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
+        run: apt update -y; apt install -y jq xz-utils libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
       - name: "Install zig"
         run: |
           TARBALL=$(curl -s "https://ziglang.org/download/index.json" | jq --raw-output ".[\"0.14.1\"][\"$(uname -m)-linux\"].tarball")
