@@ -11,13 +11,13 @@ jobs:
         with:
           repository: "ghostty-org/ghostty"
       - name: "Install build dependencies"
-        run: sudo apt update -y; sudo apt install -y jq libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
+        run: apt update -y; apt install -y jq libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
       - name: "Install zig"
         run: |
           TARBALL=$(curl -s "https://ziglang.org/download/index.json" | jq --raw-output ".['0.14.1']['$(uname -m)-linux'].tarball")
           VERSION=$(basename ${TARBALL} | sed 's/.tar.xz$//')
           curl -s "${TARBALL}" | tar -xJC /tmp
-          sudo cp -r "/tmp/${VERSION}/zig" "/tmp/${VERSION}/lib" /bin/
+          cp -r "/tmp/${VERSION}/zig" "/tmp/${VERSION}/lib" /bin/
       - name: "Compile ghostty for aarch64"
         run: zig build -Doptimize=ReleaseFast -Dtarget=aarch64-linux --prefix aarch64-linux
       - name: "Compile ghostty for x86_64"
@@ -29,3 +29,5 @@ jobs:
           tar -czf release/x86_64-linux.tar.gz x86_64-linux
       - name: "Publish release"
         run: gh release create "Latest git" ./release/*
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
