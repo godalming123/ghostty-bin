@@ -14,7 +14,7 @@ jobs:
         run: apt update -y; apt install -y jq libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
       - name: "Install zig"
         run: |
-          TARBALL=$(curl -s "https://ziglang.org/download/index.json" | jq --raw-output ".['0.14.1']['$(uname -m)-linux'].tarball")
+          TARBALL=$(curl -s "https://ziglang.org/download/index.json" | jq --raw-output ".[\"0.14.1\"][\"$(uname -m)-linux\"].tarball")
           VERSION=$(basename ${TARBALL} | sed 's/.tar.xz$//')
           curl -s "${TARBALL}" | tar -xJC /tmp
           cp -r "/tmp/${VERSION}/zig" "/tmp/${VERSION}/lib" /bin/
