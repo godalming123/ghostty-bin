@@ -11,23 +11,19 @@ jobs:
         with:
           repository: "ghostty-org/ghostty"
       - name: "Install build dependencies"
-        run: apt update -y; apt install -y jq xz-utils libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils
+        run: apt update -y; apt install -y jq xz-utils gh libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils libgtk4-layer-shell-dev
       - name: "Install zig"
         run: |
           TARBALL=$(curl -s "https://ziglang.org/download/index.json" | jq --raw-output ".[\"0.14.1\"][\"$(uname -m)-linux\"].tarball")
           VERSION=$(basename ${TARBALL} | sed 's/.tar.xz$//')
           curl -s "${TARBALL}" | tar -xJC /tmp
           cp -r "/tmp/${VERSION}/zig" "/tmp/${VERSION}/lib" /bin/
-      - name: "Compile ghostty for aarch64"
-        run: zig build -Doptimize=ReleaseFast -Dtarget=aarch64-linux --prefix aarch64-linux
       - name: "Compile ghostty for x86_64"
-        run: zig build -Doptimize=ReleaseFast -Dtarget=x86_64-linux --prefix x86_64-linux
+        run: zig build -Doptimize=ReleaseFast --prefix x86_64-linux
+        # TODO: Compile ghostty for aarch64
       - name: "Compress binary"
-        run: |
-          mkdir release
-          tar -czf release/aarch64-linux.tar.gz aarch64-linux
-          tar -czf release/x86_64-linux.tar.gz x86_64-linux
+        run: tar -czf x86_64-linux.tar.gz x86_64-linux
       - name: "Publish release"
-        run: gh release create "Latest git" ./release/*
+        run: gh release create "Latest git" x86_64-linux.tar.gz
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
