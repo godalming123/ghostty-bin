@@ -27,7 +27,7 @@ jobs:
       - name: "Compress binary"
         run: tar -czf x86_64-linux.tar.gz x86_64-linux
       - name: "Publish release"
-        run: gh release create "Latest git" x86_64-linux.tar.gz
+        run: gh release create "git/$(git log -n 1 --pretty=format:'%H')" x86_64-linux.tar.gz
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
