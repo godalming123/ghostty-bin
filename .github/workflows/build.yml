@@ -24,6 +24,6 @@ jobs:
       - name: "Compress binary"
         run: tar -czf x86_64-linux.tar.gz x86_64-linux
       - name: "Publish release"
-        run: gh release create "Latest git" x86_64-linux.tar.gz
+        run: gh release create --repo godalming123/ghostty-bin "Latest git" x86_64-linux.tar.gz
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
