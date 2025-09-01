@@ -1,23 +1,17 @@
 # Ghostty bin
 
-[Ghostty](https://ghostty.org/), packaged as a binary, so that it can be added to [binary-repository](https://github.com/godalming123/binary-repository/), so that it can be used with [exec-bin](https://github.com/godalming123/exec-bin).
+[Ghostty](https://ghostty.org/), packaged as a binary, so that it can be added to [binary-repository](https://github.com/godalming123/binary-repository/), so that it can be used with [bento](https://github.com/godalming123/bento).
 
-# Instructions for testing locally
+> [!WARNING]
+> This binary is built using arch libraries since [binary-repository](https://github.com/godalming123/binary-repository/) uses arch libraries, so it should not be used on distrubutions other than arch without setting `LD_LIBRARY_PATH` correctly like [bento](https://github.com/godalming123/bento) does.
 
-## 1. Start the container
-
-```sh
-docker run -it ubuntu:25.04 bash
-```
-
-## 2. Emulate the checkout step
+# Commands to test locally
 
 ```sh
-git clone https://github.com/ghostty-org/ghostty.git
-cd ghostty
+sudo ./generate-compressed-ghostty-artifact.sh
+tar --use-compress-program=unzstd -xvf ghostty.tar.zst
+GHOSTTY_RESOURCES_DIR="$(pwd)/share/ghostty" ./bin/ghostty
 ```
-
-## 3. Manually run the commands in the docker container
 
 # Stargazers over time
 

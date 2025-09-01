@@ -1,4 +1,7 @@
-on: workflow_dispatch
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -6,28 +9,13 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:25.04
     name: Build
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: "ghostty-org/ghostty"
-      - name: "Install build dependencies"
-        run: apt update -y; apt install -y jq xz-utils gh libgtk-4-dev libadwaita-1-dev git blueprint-compiler gettext libxml2-utils libgtk4-layer-shell-dev
-      - name: "Install zig"
-        run: |
-          TARBALL=$(curl -s "https://ziglang.org/download/index.json" | jq --raw-output ".[\"0.14.1\"][\"$(uname -m)-linux\"].tarball")
-          VERSION=$(basename ${TARBALL} | sed 's/.tar.xz$//')
-          curl -s "${TARBALL}" | tar -xJC /tmp
-          cp -r "/tmp/${VERSION}/zig" "/tmp/${VERSION}/lib" /bin/
-      - name: "Compile ghostty for x86_64"
-        run: zig build -Doptimize=ReleaseFast --prefix x86_64-linux
-        # TODO: Compile ghostty for aarch64
-      - name: "Compress binary"
-        run: tar -czf x86_64-linux.tar.gz x86_64-linux
+      - name: "Checkout code"
+        uses: actions/checkout@v5
+      - name: "Generate build artifact"
+        run: ./generate-compressed-ghostty-artifact.sh
       - name: "Publish release"
-        run: gh release create "latest/git" x86_64-linux.tar.gz
+        run: gh release create "v1.1.3" ./ghostty.tar.zst
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
