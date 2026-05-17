@@ -16,6 +16,6 @@ jobs:
       - name: "Generate build artifact"
         run: ./generate-compressed-ghostty-artifact.sh
       - name: "Publish release"
-        run: gh release create "v1.2.2" ./ghostty.tar.zst
+        run: gh release create "v1.3.1" ./ghostty.tar.zst
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
